@@ -15,7 +15,18 @@ export const UP = "UP";
 export const DOWN = "DOWN";
 
 export const SET_DIS_DIRECTION = "SET_DIS_DIRECTION"
+export const INCREASE_SNAKE = "INCREASE_SNAKE";
 
+export const INCREMENT_SCORE = "INCREMENT_SCORE"; //action
+
+//action creator:
+export const scoreUpdates = (type: string) => ({
+	type
+});
+
+export const increaseSnake = () => ({  //action creator
+	type: INCREASE_SNAKE
+});
 export interface ISnakeCoord {
 	x: number;
 	y: number;

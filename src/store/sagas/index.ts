@@ -16,8 +16,12 @@ import {
   MOVE_DOWN,
   MOVE_LEFT,
   MOVE_RIGHT,
-  MOVE_UP, RIGHT,
-  setDisDirection, UP
+  MOVE_UP,
+
+  RIGHT,
+  setDisDirection,
+
+  UP,
 } from "../actions/index.tsx";
 
 export function* moveSaga(params: {
