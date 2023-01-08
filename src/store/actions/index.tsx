@@ -15,14 +15,31 @@ export const UP = "UP";
 export const DOWN = "DOWN";
 
 export const SET_DIS_DIRECTION = "SET_DIS_DIRECTION"
-export const INCREASE_SNAKE = "INCREASE_SNAKE";
 
+export const INCREASE_SNAKE = "INCREASE_SNAKE";
 export const INCREMENT_SCORE = "INCREMENT_SCORE"; //action
+
+export const RESET = "RESET";
+export const RESET_SCORE = "RESET_SCORE";
+export const STOP_GAME = "STOP_GAME"; //action
+export interface ISnakeCoord {
+	x: number;
+	y: number;
+}
+
+//action creator
+export const stopGame = () => ({
+	type: STOP_GAME
+});
 
 //action creator:
 export const scoreUpdates = (type: string) => ({
 	type
 });
+
+export const resetGame = () => ({
+	type: RESET
+  });
 
 export const increaseSnake = () => ({  //action creator
 	type: INCREASE_SNAKE

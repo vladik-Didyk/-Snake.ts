@@ -10,7 +10,13 @@ import {
     MOVE_RIGHT,
     MOVE_UP,
     scoreUpdates,
+    stopGame,
+    resetGame,
+    RESET_SCORE
 } from "../store/actions/index.tsx";
+
+import Instruction from "./Instructions.tsx";
+
 
 //Importing necessary modules
 
@@ -20,6 +26,7 @@ import {
     drawObject,
     generateRandomPosition,
     IObjectBody,
+    hasSnakeCollided,
 } from "../utilities/index.tsx";
 
 
@@ -36,6 +43,7 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
     const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
 
     const snake1 = useSelector((state: IGlobalState) => state.snake);
+    const [gameEnded, setGameEnded] = useState<boolean>(false);
 
     const [pos, setPos] = useState<IObjectBody>(
         generateRandomPosition(width - 20, height - 20)
@@ -103,6 +111,21 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
         [disallowedDirection, moveSnake]
     );
 
+    const resetBoard = useCallback(() => {
+        window.removeEventListener("keypress", handleKeyEvents);
+        dispatch(resetGame());
+        dispatch(scoreUpdates(RESET_SCORE));
+        clearBoard(context);
+        drawObject(context, snake1, "#91C483");
+        drawObject(
+            context,
+            [generateRandomPosition(width - 20, height - 20)],
+            "#676FA3"
+        ); //Draws object randomly
+        window.addEventListener("keypress", handleKeyEvents);
+    }, [context, dispatch, handleKeyEvents, height, snake1, width]);
+
+
     useEffect(() => {
         //Generate new object
         if (isConsumed) {
@@ -131,8 +154,19 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
             setIsConsumed(true);
         }
 
+        if (
+            hasSnakeCollided(snake1, snake1[0]) ||
+            snake1[0].x >= width ||
+            snake1[0].x <= 0 ||
+            snake1[0].y <= 0 ||
+            snake1[0].y >= height
+        ) {
+            setGameEnded(true);
+            dispatch(stopGame());
+            window.removeEventListener("keypress", handleKeyEvents);
+        } else setGameEnded(false);
 
-    }, [context, pos, snake1,])
+    }, [context, pos, snake1, height, width, dispatch, handleKeyEvents])
 
 
     useEffect(() => {
@@ -151,9 +185,7 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
     }, [isConsumed, pos, height, width, dispatch]);
 
     useEffect(() => {
-
         window.addEventListener("keypress", handleKeyEvents);
-
         return () => {
             window.removeEventListener("keypress", handleKeyEvents);
         };
@@ -161,13 +193,17 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
 
 
     return (
-        <canvas
-            ref={canvasRef}
-            style={{
-                border: "3px solid black",
-            }}
-            height={height}
-            width={width}
-        />
+        <>
+            <canvas
+                ref={canvasRef}
+                style={{
+                    border: `3px solid ${gameEnded ? "red" : "black"}`,
+                }}
+                height={height}
+                width={width}
+            />
+            <Instruction resetBoard={resetBoard} />
+        </>
+
     );
 };

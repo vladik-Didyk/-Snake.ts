@@ -12,20 +12,18 @@
 // Therefore, the reducer function should be a pure function.
 
 import {
-    RIGHT,
-    LEFT,
-    UP,
     DOWN,
-    SET_DIS_DIRECTION,
-    ISnakeCoord,
     INCREASE_SNAKE,
-    INCREMENT_SCORE
+    INCREMENT_SCORE,
+    ISnakeCoord,
+    LEFT,
+    RESET,
+    RESET_SCORE,
+    RIGHT,
+    SET_DIS_DIRECTION,
+    UP,
 } from '../actions/index.tsx'
 
-interface ISnakeCoord {
-    x: number;
-    y: number;
-}
 
 export interface IGlobalState {
     snake: ISnakeCoord[] | [];
@@ -47,7 +45,7 @@ const globalState: IGlobalState = {
 };
 
 
-export default function gameReducer(state = globalState, action: any) {
+const gameReducer = (state = globalState, action: any) => {
     switch (action.type) {
 
         case RIGHT:
@@ -56,7 +54,6 @@ export default function gameReducer(state = globalState, action: any) {
         case DOWN: {
             let newSnake = [...state.snake];
             newSnake = [{
-                //New x and y coordinates
                 x: state.snake[0].x + action.payload[0],
                 y: state.snake[0].y + action.payload[1],
             }, ...newSnake];
@@ -69,6 +66,7 @@ export default function gameReducer(state = globalState, action: any) {
         }
         case SET_DIS_DIRECTION:
             return { ...state, disallowedDirection: action.payload };
+
         case INCREASE_SNAKE:
             const snakeLen = state.snake.length;
             return {
@@ -81,12 +79,19 @@ export default function gameReducer(state = globalState, action: any) {
                     },
                 ],
             };
+
         case INCREMENT_SCORE:
             return {
                 ...state,
                 score: state.score + 1,
             };
+
+        case RESET_SCORE:
+            return { ...state, score: 0 };
+
         default:
             return state;
     }
 }
+
+export default gameReducer;

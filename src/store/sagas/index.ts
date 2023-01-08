@@ -9,7 +9,9 @@ import {
   PutEffect,
   takeLatest
 } from "redux-saga/effects";
+
 import {
+  RESET ,
   DOWN,
   ISnakeCoord,
   LEFT,
@@ -17,6 +19,7 @@ import {
   MOVE_LEFT,
   MOVE_RIGHT,
   MOVE_UP,
+  STOP_GAME,
 
   RIGHT,
   setDisDirection,
@@ -32,7 +35,7 @@ export function* moveSaga(params: {
   | PutEffect<{ type: string; payload: string }>
   | CallEffect<true>
 > {
-  while (true) {
+  while (params.type !== RESET && params.type !== STOP_GAME) {
     yield put({
       type: params.type.split("_")[1],
       payload: params.payload,
@@ -60,7 +63,7 @@ export function* moveSaga(params: {
 
 function* watcherSagas() {
   yield takeLatest(
-    [MOVE_RIGHT, MOVE_LEFT, MOVE_UP, MOVE_DOWN],
+    [MOVE_RIGHT, MOVE_LEFT, MOVE_UP, MOVE_DOWN, RESET , STOP_GAME],
     moveSaga
   );
 }
