@@ -14,8 +14,10 @@ import {
     MOVE_UP,
 
 } from "../store/actions/index.tsx";
+
 //Importing necessary modules
 import { useDispatch, useSelector } from "react-redux";
+
 import { IGlobalState } from "../store/reducers";
 import {
     clearBoard,
@@ -71,16 +73,16 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
         (event: KeyboardEvent) => {
             if (disallowedDirection) {
                 switch (event.key) {
-                    case "w":
+                    case "w" || "W" || "ArrowUp":
                         moveSnake(0, -20, disallowedDirection);
                         break;
-                    case "s":
+                    case "s" || "S" || "ArrowDown":
                         moveSnake(0, 20, disallowedDirection);
                         break;
-                    case "a":
+                    case "a" || "A" || "ArrowLeft":
                         moveSnake(-20, 0, disallowedDirection);
                         break;
-                    case "d":
+                    case "d" || "D" || "ArrowRight":
                         event.preventDefault();
                         moveSnake(20, 0, disallowedDirection);
                         break;
@@ -99,14 +101,6 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
     );
 
     useEffect(() => {
-        window.addEventListener("keypress", handleKeyEvents);
-
-        return () => {
-            window.removeEventListener("keypress", handleKeyEvents);
-        };
-    }, [disallowedDirection, handleKeyEvents]);
-
-    useEffect(() => {
         //Generate new object
         if (isConsumed) {
             const posi = generateRandomPosition(width - 20, height - 20);
@@ -116,16 +110,27 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
         }
     }, [isConsumed, pos, height, width, dispatch]);
 
-    useEffect(() => {
-        clearBoard(context);
 
+    useEffect(() => {
         //Draw on canvas each time
         setContext(canvasRef.current && canvasRef.current.getContext("2d")); //store in state variable
+
+        clearBoard(context);
+
         drawObject(context, snake1, "#91C483"); //Draws snake at the required position
-        drawObject(context, [
-            pos
-        ], "#676FA3"); //Draws fruit randomly
-    }, [context])
+        drawObject(context, [pos], "#676FA3"); //Draws fruit randomly
+
+    }, [context, pos, snake1,])
+
+
+    useEffect(() => {
+
+        window.addEventListener("keypress", handleKeyEvents);
+
+        return () => {
+            window.removeEventListener("keypress", handleKeyEvents);
+        };
+    }, [disallowedDirection, handleKeyEvents]);
 
 
     return (

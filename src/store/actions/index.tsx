@@ -21,7 +21,6 @@ export interface ISnakeCoord {
 	y: number;
 }
 
-
 export const setDisDirection = (direction: string) => ({
 	type: SET_DIS_DIRECTION,
 	payload: direction
