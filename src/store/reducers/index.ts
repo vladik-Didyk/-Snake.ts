@@ -1,11 +1,11 @@
 // Reducers are functions that return a new global state 
 // every time an action is dispatched. 
+
 // They take in the current global state and return the new state based 
 // on the action that is dispatched/called.  
 // This new state is calculated based on the previous state.
 
-// We should be careful 
-// here that we do not perform any side-effects inside this function. 
+// We should be careful here that we do not perform any side-effects inside this function. 
 // We should not alter the global state – 
 // rather we should return the updated state as a new object itself. 
 
@@ -37,6 +37,8 @@ interface ISnakeCoord {
 
 export interface IGlobalState {
     snake: ISnakeCoord[] | [];
+    disallowedDirection: string;
+    score: number;
 }
 
 const globalState: IGlobalState = {
@@ -48,4 +50,6 @@ const globalState: IGlobalState = {
         { x: 520, y: 300 },
         { x: 500, y: 300 },
     ],
+    disallowedDirection: "",
+    score: 0,
 };
