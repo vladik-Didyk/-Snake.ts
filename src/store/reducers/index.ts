@@ -11,24 +11,7 @@
 
 // Therefore, the reducer function should be a pure function.
 
-const GlobalState = {
-    data: ""
-};
-
-export default function gameReducer(state = GlobalState, action) {
-    switch (action.type) {
-        case "MOVE_RIGHT":
-            /**
-             * Perform a certain set of operations
-             */
-            return {
-                ...state, data: action.payload
-            };
-
-        default:
-            return state;
-    }
-}
+import { RIGHT, LEFT, UP, DOWN, SET_DIS_DIRECTION, ISnakeCoord } from '../actions/index.tsx'
 
 interface ISnakeCoord {
     x: number;
@@ -53,3 +36,32 @@ const globalState: IGlobalState = {
     disallowedDirection: "",
     score: 0,
 };
+
+
+export default function gameReducer(state = globalState, action: any) {
+    switch (action.type) {
+
+        case RIGHT:
+        case LEFT:
+        case UP:
+        case DOWN: {
+            let newSnake = [...state.snake];
+            newSnake = [{
+                //New x and y coordinates
+                x: state.snake[0].x + action.payload[0],
+                y: state.snake[0].y + action.payload[1],
+            }, ...newSnake];
+            newSnake.pop();
+
+            return {
+                ...state,
+                snake: newSnake,
+            };
+        }
+        case SET_DIS_DIRECTION:
+            return { ...state, disallowedDirection: action.payload };
+
+        default:
+            return state;
+    }
+}
