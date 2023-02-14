@@ -31,8 +31,13 @@ export interface IGlobalState {
     score: number;
 }
 
-const globalState: IGlobalState = {
-    //Postion of the entire snake
+export interface IGlobalState {
+    snake: ISnakeCoord[];
+    disallowedDirection: string;
+    score: number;
+}
+
+const initialState: IGlobalState = {
     snake: [
         { x: 580, y: 300 },
         { x: 560, y: 300 },
@@ -40,14 +45,23 @@ const globalState: IGlobalState = {
         { x: 520, y: 300 },
         { x: 500, y: 300 },
     ],
-    disallowedDirection: "",
+    disallowedDirection: '',
     score: 0,
 };
 
 
-const gameReducer = (state = globalState, action: any) => {
-    switch (action.type) {
+type GameAction =
+    | { type: typeof RIGHT | typeof LEFT | typeof UP | typeof DOWN; payload: [number, number] }
+    | { type: typeof SET_DIS_DIRECTION; payload: string }
+    | { type: typeof INCREASE_SNAKE }
+    | { type: typeof INCREMENT_SCORE }
+    | { type: typeof RESET_SCORE };
 
+const gameReducer = (
+    state: IGlobalState = initialState,
+    action: GameAction): IGlobalState => {
+
+    switch (action.type) {
         case RIGHT:
         case LEFT:
         case UP:
@@ -57,6 +71,7 @@ const gameReducer = (state = globalState, action: any) => {
                 x: state.snake[0].x + action.payload[0],
                 y: state.snake[0].y + action.payload[1],
             }, ...newSnake];
+
             newSnake.pop();
 
             return {
@@ -64,21 +79,20 @@ const gameReducer = (state = globalState, action: any) => {
                 snake: newSnake,
             };
         }
+
+
+
         case SET_DIS_DIRECTION:
             return { ...state, disallowedDirection: action.payload };
 
-        case INCREASE_SNAKE:
+        case INCREASE_SNAKE: {
             const snakeLen = state.snake.length;
-            return {
-                ...state,
-                snake: [
-                    ...state.snake,
-                    {
-                        x: state.snake[snakeLen - 1].x - 20,
-                        y: state.snake[snakeLen - 1].y - 20,
-                    },
-                ],
-            };
+            const tail = state.snake[snakeLen - 1];
+            const newTail = { x: tail.x - 20, y: tail.y - 20 };
+            const newSnake = [...state.snake, newTail];
+
+            return { ...state, snake: newSnake };
+        }
 
         case INCREMENT_SCORE:
             return {

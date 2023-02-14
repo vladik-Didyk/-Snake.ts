@@ -35,6 +35,17 @@ export interface ICanvasBoard {
     width: number;
 }
 
+const HANDLE_KEY_MAP = {
+    w: [0, -20],
+    a: [-20, 0],
+    s: [0, 20],
+    d: [20, 0],
+    ArrowUp: [0, -20],
+    ArrowLeft: [-20, 0],
+    ArrowDown: [0, 20],
+    ArrowRight: [20, 0]
+};
+
 export default function CanvasBoard({ height, width }: ICanvasBoard) {
     const dispatch = useDispatch();
 
@@ -75,56 +86,38 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
         [dispatch]
     );
 
-
-    const handleKeyEvents = useCallback(
-        (event: KeyboardEvent) => {
-
-            if (disallowedDirection) {
-
-                switch (event.key) {
-                    case "w" || "W" || "ArrowUp":
-                        moveSnake(0, -20, disallowedDirection);
-                        break;
-                    case "s" || "S" || "ArrowDown":
-                        moveSnake(0, 20, disallowedDirection);
-                        break;
-                    case "a" || "A" || "ArrowLeft":
-                        moveSnake(-20, 0, disallowedDirection);
-                        break;
-                    case "d" || "D" || "ArrowRight":
-
-                        event.preventDefault();
-                        moveSnake(20, 0, disallowedDirection);
-                        break;
-                }
-            } else {
-                if (
-                    disallowedDirection !== "LEFT" &&
-                    disallowedDirection !== "UP" &&
-                    disallowedDirection !== "DOWN" &&
-                    event.key === "d"
-                )
-                    //Move RIGHT at start
-                    moveSnake(20, 0, disallowedDirection);
+    //! This is the function which contorl the snake movement
+    const handleKeyEvents = useCallback((event: KeyboardEvent) => {
+        if (disallowedDirection) {
+            const [dx, dy] = HANDLE_KEY_MAP[event.key];
+            if (dx !== undefined && dy !== undefined && event.key !== disallowedDirection) {
+                moveSnake(dx, dy, disallowedDirection);
             }
-        },
-        [disallowedDirection, moveSnake]
-    );
+        } else if (event.key === "d") {
+            // Move RIGHT at start
+            moveSnake(20, 0, disallowedDirection);
+        }
+    }, [disallowedDirection, moveSnake]);
+
 
     const resetBoard = useCallback(() => {
-        window.removeEventListener("keypress", handleKeyEvents);
-        dispatch(resetGame());
-        dispatch(scoreUpdates(RESET_SCORE));
-        clearBoard(context);
-        drawObject(context, snake1, "#91C483");
-        drawObject(
-            context,
-            [generateRandomPosition(width - 20, height - 20)],
-            "#676FA3"
-        ); //Draws object randomly
-        window.addEventListener("keypress", handleKeyEvents);
-    }, [context, dispatch, handleKeyEvents, height, snake1, width]);
-
+        try {
+            window.removeEventListener("keypress", handleKeyEvents);
+            dispatch(resetGame());
+            dispatch(scoreUpdates(RESET_SCORE));
+            clearBoard(context);
+            drawObject(context, snake1, "#91C483");
+            drawObject(
+                context,
+                [generateRandomPosition(width - 20, height - 20)],
+                "#676FA3"
+            ); //Draws object randomly
+        } catch (e) {
+            // handle errors here
+        } finally {
+            window.addEventListener("keypress", handleKeyEvents);
+        }
+    }, [context, dispatch, height, snake1, width]);
 
     useEffect(() => {
         //Generate new object

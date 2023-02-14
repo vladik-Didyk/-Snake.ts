@@ -4,7 +4,7 @@ import { Box, Button, Flex, Heading, Kbd } from "@chakra-ui/react";
 export interface IInstructionProps {
     resetBoard: () => void;
 }
-const Instruction = ({ resetBoard }: IInstructionProps) => {
+const Instruction: React.FC<IInstructionProps> = ({ resetBoard }) => {
     return (
         <>
             <Box mt={3}>
