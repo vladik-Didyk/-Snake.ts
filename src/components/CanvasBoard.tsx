@@ -24,7 +24,7 @@ import { IGlobalState } from "../store/reducers";
 import {
     clearBoard,
     drawObject,
-    generateRandomPosition,
+    CreateRandomPosition,
     IObjectBody,
     hasSnakeCollided,
 } from "../utilities/index.tsx";
@@ -57,7 +57,7 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
     const [gameEnded, setGameEnded] = useState<boolean>(false);
 
     const [pos, setPos] = useState<IObjectBody>(
-        generateRandomPosition(width - 20, height - 20)
+        CreateRandomPosition(width - 20, height - 20)
     );
 
 
@@ -109,7 +109,7 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
             drawObject(context, snake1, "#91C483");
             drawObject(
                 context,
-                [generateRandomPosition(width - 20, height - 20)],
+                [CreateRandomPosition(width - 20, height - 20)],
                 "#676FA3"
             ); //Draws object randomly
         } catch (e) {
@@ -122,7 +122,7 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
     useEffect(() => {
         //Generate new object
         if (isConsumed) {
-            const posi = generateRandomPosition(width - 20, height - 20);
+            const posi = CreateRandomPosition(width - 20, height - 20);
             setPos(posi);
             setIsConsumed(false);
 
@@ -165,7 +165,7 @@ export default function CanvasBoard({ height, width }: ICanvasBoard) {
     useEffect(() => {
         //Generate new object
         if (isConsumed) {
-            const posi = generateRandomPosition(width - 20, height - 20);
+            const posi = CreateRandomPosition(width - 20, height - 20);
             setPos(posi);
             setIsConsumed(false);
 
