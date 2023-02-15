@@ -24,9 +24,11 @@ import { IGlobalState } from "../store/reducers";
 import {
     clearBoard,
     drawObject,
-    CreateRandomPosition,
     IObjectBody,
     hasSnakeCollided,
+} from "../utilities/index.tsx";
+import {
+    CreateRandomPosition,
 } from "../utilities/index.tsx";
 
 
